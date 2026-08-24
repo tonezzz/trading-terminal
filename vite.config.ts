@@ -4,11 +4,19 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-const coingeckoProxy = {
-  '/api/coingecko': {
-    target: 'https://api.coingecko.com',
+const tradeApiProxy = {
+  '/api/trade': {
+    target: 'http://tony-omen.local:8080',
     changeOrigin: true,
-    rewrite: (requestPath: string) => requestPath.replace(/^\/api\/coingecko/, '/api/v3'),
+    rewrite: (requestPath: string) => requestPath.replace(/^\/api\/trade/, '/apps/trade/api'),
+    configure: (proxy, options) => {
+      proxy.on('error', (err, req, res) => {
+        console.log('proxy error', err);
+      });
+      proxy.on('proxyReq', (proxyReq, req, res) => {
+        console.log('proxying:', req.method, req.url, 'to', options.target + req.url);
+      });
+    },
   },
 };
 
@@ -17,10 +25,10 @@ export default defineConfig(() => {
     server: {
       port: 3000,
       host: '0.0.0.0',
-      proxy: coingeckoProxy,
+      proxy: tradeApiProxy,
     },
     preview: {
-      proxy: coingeckoProxy,
+      proxy: tradeApiProxy,
     },
     plugins: [react(), tailwindcss()],
     resolve: {

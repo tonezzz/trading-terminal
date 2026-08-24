@@ -16,7 +16,9 @@ import {
   FALLBACK_QUOTES,
   type AssetQuote,
   fetchMarketQuotes,
-} from './src/lib/marketData';
+  fetchTradingSignal,
+  fetchHistoricalData,
+} from './src/lib/tradeApiAdapter';
 import {
   type HoldingDraft,
   type PortfolioHolding,
@@ -129,9 +131,9 @@ const App = () => {
   const [holdings, setHoldings] = useLocalStorage<PortfolioHolding[]>(
     'terminal-portfolio-v1',
     [
-      { assetId: 'bitcoin', quantity: 0.18, averageCost: 62000 },
-      { assetId: 'ethereum', quantity: 2.4, averageCost: 1900 },
-      { assetId: 'solana', quantity: 18, averageCost: 75 },
+      { assetId: 'EUR', quantity: 1000, averageCost: 1.08 },
+      { assetId: 'GBP', quantity: 500, averageCost: 1.27 },
+      { assetId: 'GOLD', quantity: 10, averageCost: 2000 },
     ],
   );
   const [selectedAssetId, setSelectedAssetId] = useState(DEFAULT_WATCHLIST_IDS[0]);
@@ -236,7 +238,7 @@ const App = () => {
           <div>
             <h1 className="text-2xl font-semibold tracking-normal text-white">Trading Terminal</h1>
             <p className="mt-1 text-sm text-slate-400">
-              Market dashboard for crypto watchlists, portfolio exposure, and AI-ready research workflows.
+              Market dashboard for currencies, commodities, and dollar index (168K+ database records).
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 text-sm">
